@@ -128,7 +128,7 @@ tools = [
         transport="streamable-http",
         timeout_seconds=30,
         include_tools=mcp_tools.extend(get_toolset("text2sql")),
-        requires_confirmation_tools=["execute_sql"]
+        requires_confirmation_tools=["execute_sql"],
     )
 ]
 

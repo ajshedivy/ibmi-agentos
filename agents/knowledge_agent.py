@@ -88,18 +88,10 @@ def load_default_documents() -> None:
     knowledge.insert(
         name="IBM i MCP Server quick start guide",
         url="https://ibm-d95bab6e.mintlify.app/quickstart.md",
-        skip_if_exists=True
+        skip_if_exists=True,
     )
-    knowledge.insert(
-        name="Agno Introduction",
-        url="https://docs.agno.com/introduction.md",
-        skip_if_exists=True
-    )
-    knowledge.insert(
-        name="Agno First Agent",
-        url="https://docs.agno.com/first-agent.md",
-        skip_if_exists=True
-    )
+    knowledge.insert(name="Agno Introduction", url="https://docs.agno.com/introduction.md", skip_if_exists=True)
+    knowledge.insert(name="Agno First Agent", url="https://docs.agno.com/first-agent.md", skip_if_exists=True)
 
 
 if __name__ == "__main__":

@@ -123,7 +123,9 @@ def parse_yaml_tools(tools_dir: Path, schema: dict | None = None) -> tuple[dict,
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Parse and validate MCP tool YAML files into a consolidated JSON mapping")
+    parser = argparse.ArgumentParser(
+        description="Parse and validate MCP tool YAML files into a consolidated JSON mapping"
+    )
     parser.add_argument("--tools-dir", type=Path, default=Path("tools"), help="Directory containing YAML tool files")
     parser.add_argument("--output", type=Path, default=Path("tools/toolsets.json"), help="Output JSON file path")
     parser.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA_PATH, help="JSON schema file for validation")
@@ -147,12 +149,12 @@ def main():
 
     # Report validation results
     if errors:
-        print(f"\n{'='*60}", file=sys.stderr)
+        print(f"\n{'=' * 60}", file=sys.stderr)
         print(f"VALIDATION ERRORS ({len(errors)}):", file=sys.stderr)
-        print(f"{'='*60}", file=sys.stderr)
+        print(f"{'=' * 60}", file=sys.stderr)
         for err in errors:
             print(f"  {err}", file=sys.stderr)
-        print(f"{'='*60}\n", file=sys.stderr)
+        print(f"{'=' * 60}\n", file=sys.stderr)
     elif schema is not None:
         print("All YAML files passed schema validation")
 
