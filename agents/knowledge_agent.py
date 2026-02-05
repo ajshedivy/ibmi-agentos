@@ -11,7 +11,7 @@ Run:
 from agno.agent import Agent
 from agno.knowledge import Knowledge
 from agno.knowledge.embedder.openai import OpenAIEmbedder
-from agno.models.openai import OpenAIResponses
+from agno.models.anthropic import Claude
 from agno.vectordb.pgvector import PgVector, SearchType
 
 from db import db_url, get_postgres_db
@@ -59,7 +59,7 @@ You are a knowledge assistant. You answer questions by searching your knowledge 
 knowledge_agent = Agent(
     id="knowledge-agent",
     name="Knowledge Agent",
-    model=OpenAIResponses(id="gpt-5.2"),
+    model=Claude(id="claude-sonnet-4-5"),
     db=agent_db,
     knowledge=knowledge,
     instructions=instructions,
@@ -76,14 +76,29 @@ knowledge_agent = Agent(
 def load_default_documents() -> None:
     """Load default documents into the knowledge base."""
     knowledge.insert(
+        name="IBM i MCP server architecture",
+        url="https://ibm-d95bab6e.mintlify.app/concepts/architecture.md",
+        skip_if_exists=True,
+    )
+    knowledge.insert(
+        name="SQL tools overview",
+        url="https://ibm-d95bab6e.mintlify.app/sql-tools/overview.md",
+        skip_if_exists=True,
+    )
+    knowledge.insert(
+        name="IBM i MCP Server quick start guide",
+        url="https://ibm-d95bab6e.mintlify.app/quickstart.md",
+        skip_if_exists=True
+    )
+    knowledge.insert(
         name="Agno Introduction",
         url="https://docs.agno.com/introduction.md",
-        skip_if_exists=True,
+        skip_if_exists=True
     )
     knowledge.insert(
         name="Agno First Agent",
         url="https://docs.agno.com/first-agent.md",
-        skip_if_exists=True,
+        skip_if_exists=True
     )
 
 

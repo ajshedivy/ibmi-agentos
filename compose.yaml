@@ -27,6 +27,8 @@ services:
     volumes:
       - .:/app
       - agentos-data:/data
+    env_file:
+      - .env
     environment:
       DATA_DIR: /data
       RUNTIME_ENV: dev
@@ -40,12 +42,41 @@ services:
       PRINT_ENV_ON_LOAD: "True"
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       EXA_API_KEY: ${EXA_API_KEY:-}
+      MCP_URL: http://ibmi-mcp-server:3010/mcp
     depends_on:
-      - agentos-db
+      agentos-db:
+        condition: service_started
+      ibmi-mcp-server:
+        condition: service_healthy
     networks:
       - agentos
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+  ibmi-mcp-server:
+    image: node:20-slim
+    container_name: ibmi-mcp-server
+    restart: unless-stopped
+    ports:
+      - "3010:3010"
+    networks:
+      - agentos
+    working_dir: /app
+    command: npx -y @ibm/ibmi-mcp-server@latest
+    env_file:
+      - .env
+    environment:
+      - MCP_TRANSPORT_TYPE=http 
+      - YAML_AUTO_RELOAD=true
+      - TOOLS_YAML_PATH=/app/tools
+      - YAML_ALLOW_DUPLICATE_SOURCES=true
+      - IBMI_ENABLE_EXECUTE_SQL=true
+    volumes:
+      - ./tools:/app/tools:rw
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3010/healthz').then(function(r){process.exit(r.ok?0:1)}).catch(function(){process.exit(1)})\""]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 15s
+
 
 networks:
   agentos:

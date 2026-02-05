@@ -8,7 +8,22 @@ chat:
       - "What is Agno?"
       - "How do I create my first agent?"
       - "What documents are in your knowledge base?"
-    mcp-agent:
-      - "What is Agno?"
-      - "What tools do you have access to?"
-      - "What are Learning Machines?"
+    ibmi-performance-monitor:
+      - "What is the current system status?"
+      - "Show me memory pool utilization"
+      - "Which jobs are consuming the most CPU?"
+    ibmi-ptf-management:
+      - "What is the PTF status of this system?"
+      - "Are there any critical PTF updates needed?"
+      - "Show me outdated PTF groups"
+    ibmi-sample:
+      - "Show me employees in the SAMPLE database"
+      - "Find employees in the Operations department"
+      - "What projects is employee 000010 working on?"
+    ibmi-security-audit:
+      - "Perform a security audit of user privileges"
+      - "List files readable by any user"
+      - "Check for impersonation vulnerabilities"
+    ibmi-text2sql:
+      - "Show me the structure of the QCUSTCDT table"
+      - "Get statistics for tables in SAMPLE schema"

@@ -14,8 +14,12 @@ from pathlib import Path
 from agno.os import AgentOS
 
 from agents.knowledge_agent import knowledge_agent
-from agents.mcp_agent import mcp_agent
 from agents.pal import pal, pal_knowledge
+from agents.performance_agent import performance_agent
+from agents.ptf_agent import ptf_agent
+from agents.sample_data_agent import sample_agent
+from agents.security_audit_agent import security_audit_agent
+from agents.text2sql_agent import text2sql_agent
 from db import get_postgres_db
 
 # ============================================================================
@@ -25,7 +29,15 @@ agent_os = AgentOS(
     name="AgentOS",
     tracing=True,
     db=get_postgres_db(),
-    agents=[pal, knowledge_agent, mcp_agent],
+    agents=[
+        pal,
+        knowledge_agent,
+        performance_agent,
+        ptf_agent,
+        sample_agent,
+        security_audit_agent,
+        text2sql_agent,
+    ],
     knowledge=[pal_knowledge],
     config=str(Path(__file__).parent / "config.yaml"),
 )

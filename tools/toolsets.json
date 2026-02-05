@@ -1,0 +1,228 @@
+{
+  "employee_information": {
+    "tools": [
+      "get_employee_details",
+      "find_employees_by_department",
+      "find_employees_by_job",
+      "search_employees"
+    ],
+    "source": "employee-info.yaml",
+    "title": "Employee Information",
+    "description": "Tools for retrieving and analyzing employee data"
+  },
+  "project_management": {
+    "tools": [
+      "get_employee_projects",
+      "find_project_team_members"
+    ],
+    "source": "employee-info.yaml",
+    "title": "Project Management",
+    "description": "Tools for managing project assignments and team members"
+  },
+  "salary_analysis": {
+    "tools": [
+      "get_department_salary_stats",
+      "calculate_employee_bonus"
+    ],
+    "source": "employee-info.yaml",
+    "title": "Salary Analysis",
+    "description": "Tools for analyzing salary data across departments"
+  },
+  "sample_all": {
+    "tools": [
+      "get_employee_details",
+      "find_employees_by_department",
+      "find_employees_by_job",
+      "get_employee_projects",
+      "get_department_salary_stats",
+      "find_project_team_members",
+      "calculate_employee_bonus",
+      "search_employees"
+    ],
+    "source": "employee-info.yaml",
+    "title": "Sample Database - All Tools",
+    "description": "Complete set of employee information, project management, and salary analysis tools"
+  },
+  "library_list_configuration": {
+    "tools": [
+      "get_system_library_list_config",
+      "get_user_library_list_config",
+      "get_system_library_list_details",
+      "get_complete_library_list"
+    ],
+    "source": "library-list-security.yaml",
+    "title": "Library List Configuration",
+    "description": "Tools for retrieving and analyzing library list configuration"
+  },
+  "library_list_security": {
+    "tools": [
+      "check_chgsyslibl_security",
+      "analyze_library_list_security",
+      "find_vulnerable_libraries",
+      "check_library_security"
+    ],
+    "source": "library-list-security.yaml",
+    "title": "Library List Security",
+    "description": "Tools for analyzing and identifying security vulnerabilities in the library list"
+  },
+  "library_list_security_assessment": {
+    "tools": [
+      "get_system_library_list_config",
+      "get_user_library_list_config",
+      "check_chgsyslibl_security",
+      "find_vulnerable_libraries"
+    ],
+    "source": "library-list-security.yaml",
+    "title": "Library List Security Assessment",
+    "description": "Comprehensive tools for assessing the security of the library list configuration"
+  },
+  "library_list_all": {
+    "tools": [
+      "get_system_library_list_config",
+      "get_system_library_list_details",
+      "check_chgsyslibl_security",
+      "get_user_library_list_config",
+      "get_complete_library_list",
+      "analyze_library_list_security",
+      "find_vulnerable_libraries",
+      "check_library_security"
+    ],
+    "source": "library-list-security.yaml",
+    "title": "Library List Security - All Tools",
+    "description": "Complete set of library list configuration and security analysis tools"
+  },
+  "performance": {
+    "tools": [
+      "system_status",
+      "system_activity",
+      "remote_connections",
+      "memory_pools",
+      "temp_storage_buckets",
+      "unnamed_temp_storage",
+      "http_server",
+      "system_values",
+      "collection_services",
+      "collection_categories",
+      "active_job_info"
+    ],
+    "source": "performance.yaml"
+  },
+  "ptf_management": {
+    "tools": [
+      "check_ptf_currency",
+      "list_outdated_ptf_groups",
+      "get_ptf_group_details",
+      "list_installed_ptf_groups",
+      "summarize_ptf_status",
+      "find_critical_ptf_updates"
+    ],
+    "source": "ptf_tools.yaml",
+    "title": "PTF Management Tools",
+    "description": "Tools for monitoring and managing Program Temporary Fixes (PTFs) and PTF groups on IBM i systems"
+  },
+  "security_vulnerability_assessment": {
+    "tools": [
+      "users_with_limited_capabilities",
+      "commands_allowed_for_users_with_limited_capabilities",
+      "list_users_who_can_see_all_db2_data",
+      "list_db_files_readable_by_any_user",
+      "list_db_files_writable_by_any_user",
+      "list_db_files_deletable_by_any_user",
+      "list_db_files_updatable_by_any_user",
+      "list_db_files_exposed_to_trigger_attack",
+      "list_user_profiles_vulnerable_to_impersonation",
+      "list_public_authority_on_attack_vector_commands",
+      "list_files_exposed_to_rename_attack",
+      "list_system_libraries_allowing_table_creation",
+      "list_adopted_authority_programs_with_public_access"
+    ],
+    "source": "security-ops.yaml",
+    "title": "Security Vulnerability Assessment",
+    "description": "Comprehensive tools for identifying security vulnerabilities, assessing user privileges, file permissions, and potential attack vectors"
+  },
+  "security_audit": {
+    "tools": [
+      "repopulate_special_authority_detail",
+      "check_command_audit_settings"
+    ],
+    "source": "security-ops.yaml",
+    "title": "Security Audit",
+    "description": "Tools for auditing security configurations and maintaining security data"
+  },
+  "security_remediation": {
+    "tools": [
+      "generate_impersonation_lockdown_commands",
+      "execute_impersonation_lockdown"
+    ],
+    "source": "security-ops.yaml",
+    "title": "Security Remediation",
+    "description": "Tools for generating and executing security remediation commands"
+  },
+  "security_all": {
+    "tools": [
+      "users_with_limited_capabilities",
+      "commands_allowed_for_users_with_limited_capabilities",
+      "repopulate_special_authority_detail",
+      "list_users_who_can_see_all_db2_data",
+      "list_db_files_readable_by_any_user",
+      "list_db_files_writable_by_any_user",
+      "list_db_files_deletable_by_any_user",
+      "list_db_files_updatable_by_any_user",
+      "list_db_files_exposed_to_trigger_attack",
+      "list_user_profiles_vulnerable_to_impersonation",
+      "list_public_authority_on_attack_vector_commands",
+      "check_command_audit_settings",
+      "generate_impersonation_lockdown_commands",
+      "execute_impersonation_lockdown",
+      "list_files_exposed_to_rename_attack",
+      "list_system_libraries_allowing_table_creation",
+      "list_adopted_authority_programs_with_public_access"
+    ],
+    "source": "security-ops.yaml",
+    "title": "Security Operations - All Tools",
+    "description": "Complete set of security vulnerability assessment, audit, and remediation tools"
+  },
+  "sysadmin_discovery": {
+    "tools": [
+      "list_service_categories",
+      "count_services_by_schema",
+      "count_services_by_sql_object_type",
+      "list_categories_for_schema"
+    ],
+    "source": "sys-admin.yaml",
+    "title": "Sys Admin Discovery",
+    "description": "High-level summaries and counts for services."
+  },
+  "sysadmin_browse": {
+    "tools": [
+      "list_services_by_category",
+      "list_services_by_schema",
+      "list_services_by_sql_object_type"
+    ],
+    "source": "sys-admin.yaml",
+    "title": "Sys Admin Browse",
+    "description": "Explore services by category, schema, and SQL object type; validate metadata."
+  },
+  "sysadmin_search": {
+    "tools": [
+      "search_services_by_name",
+      "where_is_service",
+      "search_examples_for_keyword",
+      "get_service_example"
+    ],
+    "source": "sys-admin.yaml",
+    "title": "Sys Admin Search",
+    "description": "Search capabilities for service names and example usage."
+  },
+  "text2sql": {
+    "tools": [
+      "list_tables_in_schema",
+      "validate_query",
+      "sample_rows",
+      "get_table_statistics"
+    ],
+    "source": "text2sql.yaml",
+    "title": "Text-to-SQL Development Tools",
+    "description": "Toolset for AI agents to discover schemas, validate queries, sample data, and execute SQL on IBM i. Supports the full text-to-SQL workflow."
+  }
+}

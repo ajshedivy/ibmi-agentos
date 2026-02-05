@@ -1,21 +1,30 @@
-# AgentOS Docker Template
+# AgentOS IBMi Docker Template
 
 Deploy a multi-agent system to production with Docker.
 
-[What is AgentOS?](https://docs.agno.com/agent-os/introduction) · [Agno Docs](https://docs.agno.com) · [Discord](https://agno.com/discord)
+[What is AgentOS?](https://docs.agno.com/agent-os/introduction) · [Agno Docs](https://docs.agno.com) · [Discord](https://agno.com/discord) · [IBM i MCP Server](https://github.com/IBM/ibmi-mcp-server)
 
 ---
 
 ## What's Included
 
+### IBM i Agents
+| Agent | Pattern | Description |
+|-------|---------|-------------|
+| **Text-to-SQL** | MCP | Translates natural language into SQL for Db2 for i |
+| **Performance Monitor** | MCP + Reasoning | System performance analysis - CPU, memory, I/O metrics |
+| **Security Audit** | MCP | Vulnerability assessment and remediation for IBM i security |
+| **Library List Security** | MCP + Reasoning | Library list analysis and CWE-427 attack prevention |
+| **PTF Management** | MCP | PTF group currency monitoring and maintenance planning |
+| **Sample Database** | MCP | Demo agent for exploring the SAMPLE schema |
+
+### Knowledge Agents
 | Agent | Pattern | Description |
 |-------|---------|-------------|
 | **Pal** | Learning + Tools | Your AI-powered second brain |
-| Knowledge Agent | RAG | Answers questions from a knowledge base |
-| MCP Agent | Tool Use | Connects to external services via MCP |
+| Knowledge Agent | RAG | Answers questions from a knowledge base of IBM docs |
 
 **Pal** (Personal Agent that Learns) is your AI-powered second brain. It researches, captures, organizes, connects, and retrieves your personal knowledge - so nothing useful is ever lost.
-
 ---
 
 ## Quick Start
@@ -23,17 +32,35 @@ Deploy a multi-agent system to production with Docker.
 ### Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [OpenAI API key](https://platform.openai.com/api-keys)
+- [Anthropic API key](https://console.anthropic.com/settings/keys)
+- An IBM i user profile with [Mapepire](https://ibm-d95bab6e.mintlify.app/quickstart) database server installed on the system
+
+
 
 ### 1. Clone and configure
 ```sh
 git clone https://github.com/agno-agi/agentos-docker-template.git agentos-docker
 cd agentos-docker
 cp example.env .env
-# Add your OPENAI_API_KEY to .env
 ```
 
-### 2. Start locally
+### 2. Configure `.env`
+
+Add your API keys and IBM i connection details:
+```sh
+# Required
+ANTHROPIC_API_KEY=sk-ant-***
+
+# IBM i connection
+DB2i_HOST=your-ibmi-hostname
+DB2i_USER=your-ibmi-user
+DB2i_PASS=your-ibmi-password
+
+# Optional
+EXA_API_KEY=***          # Exa API key for web research (used by Pal)
+```
+
+### 3. Start locally
 ```sh
 docker compose up -d --build
 ```
@@ -42,7 +69,7 @@ docker compose up -d --build
 - **Docs**: http://localhost:8000/docs
 - **Database**: localhost:5432
 
-### 3. Connect to control plane
+### 4. Connect to control plane
 
 1. Open [os.agno.com](https://os.agno.com)
 2. Click "Add OS" → "Local"
@@ -51,6 +78,162 @@ docker compose up -d --build
 ---
 
 ## The Agents
+
+### Text-to-SQL
+
+Translates natural language questions into SQL queries for Db2 for i. Handles schema discovery, query validation, and execution.
+
+**What it does:**
+
+| Capability | Description |
+|------------|-------------|
+| **Schema Discovery** | Explore tables, views, and column metadata |
+| **Query Validation** | Validates SQL syntax using IBM i's native parser before execution |
+| **Data Sampling** | Preview table data to understand structure |
+| **Table Statistics** | Row counts, size, and usage metrics |
+
+**Try it:**
+```
+What tables are in the SAMPLE schema?
+Show me all employees with a salary over 50000
+How many rows are in SAMPLE.EMPLOYEE?
+```
+
+**How it works:**
+- **MCP tools** connect to Db2 for i via the IBM i MCP server
+- **Validate-first workflow** ensures queries are syntactically correct before running
+- Uses IBM i SQL conventions (fully qualified names, `FETCH FIRST N ROWS ONLY`)
+
+### Performance Monitor
+
+Monitors IBM i system performance — CPU, memory, I/O metrics — and provides actionable optimization insights.
+
+**What it monitors:**
+
+| Metric | Description |
+|--------|-------------|
+| **System Status** | CPU utilization, active jobs, system ASP |
+| **Memory Pools** | Pool sizes, faults, activity levels |
+| **HTTP Servers** | Connections, threads, request handling |
+| **Active Jobs** | CPU consumption patterns and job activity |
+
+**Try it:**
+```
+What is the current system status?
+Check memory pool utilization
+Are there any performance bottlenecks?
+Show me the top CPU consuming jobs
+```
+
+**How it works:**
+- **MCP tools** query QSYS2 system health views and Collection Services
+- **Reasoning tools** analyze patterns and correlations across metrics
+- Provides prioritized recommendations with remediation steps
+
+### Security Audit
+
+Comprehensive security vulnerability assessment and guided remediation for IBM i systems.
+
+**What it assesses:**
+
+| Area | Description |
+|------|-------------|
+| **User Privileges** | Limited capability users, special authorities (*ALLOBJ, *SAVSYS) |
+| **File Permissions** | Files readable, writable, deletable, or updatable by *PUBLIC |
+| **Attack Vectors** | Trigger attacks, rename attacks, library list poisoning |
+| **Impersonation** | User profiles vulnerable to impersonation |
+| **Command Security** | Public authority on dangerous commands, audit settings |
+
+**Try it:**
+```
+Perform a security audit of user privileges
+Which files are readable by any user?
+Are there any user profiles vulnerable to impersonation?
+Check command audit settings for ADDPFTRG
+```
+
+**How it works:**
+- **MCP tools** query QSYS2 security views and authority tables
+- **Assessment-first workflow** — always analyzes before recommending changes
+- Remediation tools (lockdown commands) require explicit user confirmation
+
+### Library List Security
+
+Analyzes library list configurations to protect against "Uncontrolled Search Path Element" attacks (CWE-427).
+
+**What it checks:**
+
+| Check | Description |
+|-------|-------------|
+| **QSYSLIBL / QUSRLIBL** | System and user library list configuration |
+| **CHGSYSLIBL Security** | Whether *PUBLIC can modify the system library list |
+| **Library Authority** | Libraries with excessive *PUBLIC permissions |
+| **Attack Surface** | Libraries where attackers could insert malicious objects |
+
+**Try it:**
+```
+Analyze the security of my library list configuration
+Can *PUBLIC execute CHGSYSLIBL?
+Which libraries have excessive authority?
+Show me the complete library list hierarchy
+```
+
+**How it works:**
+- **MCP tools** inspect system values and library authorities
+- **Reasoning tools** evaluate risk levels and prioritize findings
+- Explains the attack scenario for each vulnerability found
+
+### PTF Management
+
+Monitors PTF (Program Temporary Fix) group currency and helps plan maintenance windows.
+
+**What it tracks:**
+
+| Capability | Description |
+|------------|-------------|
+| **PTF Currency** | Group status, levels behind, update availability |
+| **Critical Updates** | Groups significantly behind with priority ranking |
+| **Group Details** | Installed vs. available levels for each PTF group |
+| **Maintenance Planning** | Update schedules based on criticality |
+
+**Try it:**
+```
+What is the PTF status of this system?
+Are there any critical PTF updates needed?
+Show me details for the HIPER PTF group
+Which PTF groups are most out of date?
+```
+
+**How it works:**
+- **MCP tools** query PTF group info and currency data from QSYS2
+- Prioritizes by levels behind and group type (HIPER, Security, Database)
+- Distinguishes critical security updates from routine maintenance
+
+### Sample Database
+
+Demo agent for exploring IBM's SAMPLE schema — employees, departments, projects, and salary data.
+
+**What it queries:**
+
+| Data | Description |
+|------|-------------|
+| **Employees** | Lookup, search, and filter by department or job |
+| **Departments** | Organizational structure and reporting relationships |
+| **Projects** | Team assignments and project status |
+| **Salary Analysis** | Department stats, bonus calculations, range filters |
+
+**Try it:**
+```
+Show me the employees in the SAMPLE database
+Who works in department A00?
+What are the salary statistics by department?
+Which projects is employee 000010 assigned to?
+```
+
+**How it works:**
+- **MCP tools** query the standard IBM i SAMPLE schema
+- Educational focus — explains SQL concepts and IBM i conventions as it works
+- Demonstrates query patterns adaptable to your own data
 
 ### Pal (Personal Agent that Learns)
 
@@ -83,14 +266,16 @@ What do I know about event sourcing?
 
 **Data persistence:** Pal stores structured data in DuckDB at `/data/pal.db`. This persists across container restarts.
 
+> **Requires:** `OPENAI_API_KEY` for embeddings. `EXA_API_KEY` is optional — enables web research, company lookup, and people search.
+
 ### Knowledge Agent
 
 Answers questions using a vector knowledge base (RAG pattern).
 
 **Try it:**
 ```
-What is Agno?
-How do I create my first agent?
+What is the IBM i MCP server?
+How do I create an agent with the IBM i MCP server?
 What documents are in your knowledge base?
 ```
 
@@ -99,35 +284,34 @@ What documents are in your knowledge base?
 docker exec -it agentos-api python -m agents.knowledge_agent
 ```
 
-### MCP Agent
-
-Connects to external tools via the Model Context Protocol.
-
-**Try it:**
-```
-What tools do you have access to?
-Search the docs for how to use LearningMachine
-Find examples of agents with memory
-```
+> **Requires:** `OPENAI_API_KEY` for embeddings.
 
 ---
 
 ## Project Structure
 ```
 ├── agents/
-│   ├── pal.py              # Personal second brain agent
-│   ├── knowledge_agent.py  # RAG agent
-│   └── mcp_agent.py        # MCP tools agent
+│   ├── utils/
+│   │   ├── common.py                    # Shared instructions (guardrails, data handling)
+│   │   └── tools.py                     # Toolset loader for MCP tool filtering
+│   ├── pal.py                           # Personal second brain agent
+│   ├── knowledge_agent.py               # RAG agent
+│   ├── text2sql_agent.py                # Natural language to SQL
+│   ├── performance_agent.py             # System performance monitoring
+│   ├── security_audit_agent.py          # Security vulnerability assessment
+│   ├── library_list_security_agent.py   # Library list attack prevention
+│   ├── ptf_agent.py                     # PTF group management
+│   └── sample_data_agent.py             # SAMPLE schema demo
+├── tools/                               # IBM i MCP tools
 ├── app/
-│   ├── main.py             # AgentOS entry point
-│   └── config.yaml         # Quick prompts config
+│   ├── main.py                          # AgentOS entry point
+│   └── config.yaml                      # Quick prompts config
 ├── db/
-│   ├── session.py          # Database session
-│   └── url.py              # Connection URL builder
-├── scripts/                # Helper scripts
-├── compose.yaml            # Docker Compose config
-├── Dockerfile
-└── pyproject.toml          # Dependencies
+│   ├── session.py                       # Database session
+│   └── url.py                           # Connection URL builder
+├── scripts/                             # Helper scripts
+├── compose.yaml                         # Docker Compose config
+└── pyproject.toml                       # Dependencies
 ```
 
 ---
@@ -139,13 +323,13 @@ Find examples of agents with memory
 1. Create `agents/my_agent.py`:
 ```python
 from agno.agent import Agent
-from agno.models.openai import OpenAIResponses
+from agno.models.anthropic import Claude
 from db.session import get_postgres_db
 
 my_agent = Agent(
     id="my-agent",
     name="My Agent",
-    model=OpenAIResponses(id="gpt-5.2"),
+    model=Claude(id="claude-sonnet-4-5"),
     db=get_postgres_db(),
     instructions="You are a helpful assistant.",
 )
@@ -188,14 +372,14 @@ my_agent = Agent(
 
 ### Use a different model provider
 
-1. Add your API key to `.env` (e.g., `ANTHROPIC_API_KEY`)
+1. Add your API key to `.env` (e.g., `OPENAI_API_KEY`)
 2. Update agents to use the new provider:
 ```python
-from agno.models.anthropic import Claude
+from agno.models.openai import OpenAIResponses
 
-model=Claude(id="claude-sonnet-4-5")
+model=OpenAIResponses(id="gpt-4.1")
 ```
-3. Add dependency: `anthropic` in `pyproject.toml`
+3. Add dependency: `openai` in `pyproject.toml`
 
 ---
 
@@ -217,19 +401,38 @@ docker compose up -d agentos-db
 python -m app.main
 ```
 
+### Regenerate toolsets.json
+
+After adding or editing tool YAML files in `tools/`, regenerate the consolidated toolset mapping:
+
+```sh
+python parse_mcp_tools.py
+```
+
+This parses all YAML files in `tools/`, validates them against the MCP server schema, and writes `tools/toolsets.json`. Agents load toolsets from this file at startup via `get_toolset()`.
+
+Options:
+```sh
+python parse_mcp_tools.py --tools-dir tools --output tools/toolsets.json  # explicit paths
+python parse_mcp_tools.py --skip-validation                               # skip schema validation
+```
+
 ---
 
 ## Environment Variables
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `OPENAI_API_KEY` | Yes | - | OpenAI API key |
+| `ANTHROPIC_API_KEY` | Yes | - | Anthropic API key |
+| `DB2i_HOST` | Yes | - | IBM i hostname or IP address |
+| `DB2i_USER` | Yes | - | IBM i user profile |
+| `DB2i_PASS` | Yes | - | IBM i password |
 | `EXA_API_KEY` | No | - | Exa API key for web research |
-| `DB_HOST` | No | `localhost` | Database host |
-| `DB_PORT` | No | `5432` | Database port |
-| `DB_USER` | No | `ai` | Database user |
-| `DB_PASS` | No | `ai` | Database password |
-| `DB_DATABASE` | No | `ai` | Database name |
+| `DB_HOST` | No | `localhost` | PostgreSQL host |
+| `DB_PORT` | No | `5432` | PostgreSQL port |
+| `DB_USER` | No | `ai` | PostgreSQL user |
+| `DB_PASS` | No | `ai` | PostgreSQL password |
+| `DB_DATABASE` | No | `ai` | PostgreSQL database name |
 | `DATA_DIR` | No | `/data` | Directory for DuckDB storage |
 | `RUNTIME_ENV` | No | `prd` | Set to `dev` for auto-reload |
 
@@ -281,6 +484,7 @@ See the [Agno Tools documentation](https://docs.agno.com/tools/toolkits) for the
 
 ## Learn More
 
+- [IBM i MCP Server](https://github.com/IBM/ibmi-mcp-server)
 - [Agno Documentation](https://docs.agno.com)
 - [AgentOS Documentation](https://docs.agno.com/agent-os/introduction)
 - [Tools & Integrations](https://docs.agno.com/tools/toolkits)

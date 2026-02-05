@@ -27,6 +27,7 @@ dependencies = [
   "opentelemetry-api",
   "opentelemetry-sdk",
   "openinference-instrumentation-agno",
+  "anthropic>=0.77.1",
 ]
 
 [project.optional-dependencies]
