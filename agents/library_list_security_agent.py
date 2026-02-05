@@ -15,7 +15,6 @@ from agno.tools.reasoning import ReasoningTools
 
 from agents.utils.common import AUDIT, DATA_HANDLING, ERROR_HANDLING, GUARDRAILS, USER_CONTEXT
 from agents.utils.tools import get_toolset
-from agents.utils import get_model
 from db.session import db_url
 
 MCP_URL = "http://ibmi-mcp-server:3010/mcp"
