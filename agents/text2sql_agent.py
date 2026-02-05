@@ -120,14 +120,12 @@ When answering questions:
 # Tools
 # =============================================================================
 
-mcp_tools = ["execute_sql"]
-
 tools = [
     MCPTools(
         url=MCP_URL,
         transport="streamable-http",
         timeout_seconds=30,
-        include_tools=mcp_tools.extend(get_toolset("text2sql")),
+        include_tools=["execute_sql"] + get_toolset("text2sql"),
         requires_confirmation_tools=["execute_sql"],
     )
 ]
