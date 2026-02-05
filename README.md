@@ -77,6 +77,28 @@ docker compose up -d --build
 2. Click "Add OS" → "Local"
 3. Enter `http://localhost:8000`
 
+### 5. ⚠️ Connect to OpenAgent (experimental)
+
+1. Clone [OpenAgent](https://github.com/ajshedivy/openagent)
+2. Follow [Quickstart](https://github.com/ajshedivy/openagent?tab=readme-ov-file#quick-start) to run locally
+3. Add the AgentOS endpoint to `opencode.json`:
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "agentos": {
+      "name": "AgentOS",
+      "options": {
+        "baseURL": "http://localhost:8000"
+      }
+    }
+  }
+}
+```
+
+![alt text](docs/openagent.png)
+
+
 ---
 
 ## The Agents
