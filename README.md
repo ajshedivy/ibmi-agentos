@@ -24,7 +24,9 @@ Deploy a multi-agent system to production with Docker.
 | **Pal** | Learning + Tools | Your AI-powered second brain |
 | Knowledge Agent | RAG | Answers questions from a knowledge base of IBM docs |
 
+
 **Pal** (Personal Agent that Learns) is your AI-powered second brain. It researches, captures, organizes, connects, and retrieves your personal knowledge - so nothing useful is ever lost.
+
 ---
 
 ## Quick Start
