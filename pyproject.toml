@@ -28,6 +28,7 @@ dependencies = [
   "opentelemetry-sdk",
   "openinference-instrumentation-agno",
   "anthropic>=0.77.1",
+  "fastmcp>=2.14.5",
 ]
 
 [project.optional-dependencies]

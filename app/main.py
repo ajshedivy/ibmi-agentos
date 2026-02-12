@@ -20,7 +20,9 @@ from agents.ptf_agent import ptf_agent
 from agents.sample_data_agent import sample_agent
 from agents.security_audit_agent import security_audit_agent
 from agents.text2sql_agent import text2sql_agent
+from agents.skills_agent import skills_agent
 from db import get_postgres_db
+from teams.ibmi_team import ibmi_team
 
 # ============================================================================
 # Create AgentOS
@@ -37,9 +39,12 @@ agent_os = AgentOS(
         sample_agent,
         security_audit_agent,
         text2sql_agent,
+        skills_agent
     ],
+    teams=[ibmi_team],
     knowledge=[pal_knowledge],
     config=str(Path(__file__).parent / "config.yaml"),
+    enable_mcp_server=True
 )
 
 app = agent_os.get_app()
