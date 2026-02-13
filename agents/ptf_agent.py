@@ -7,6 +7,8 @@ identifying critical updates, and tracking installation status across the system
 Test: python -m agents.ptf
 """
 
+from os import getenv
+
 from agno.agent import Agent
 from agno.db.postgres import PostgresDb
 from agno.tools.mcp import MCPTools
@@ -16,7 +18,7 @@ from agents.utils.common import AUDIT, DATA_HANDLING, ERROR_HANDLING, GUARDRAILS
 from agents.utils.tools import get_toolset
 from db.session import db_url
 
-MCP_URL = "http://ibmi-mcp-server:3010/mcp"
+MCP_URL = getenv("MCP_URL", "http://ibmi-mcp-server:3010/mcp")
 
 # =============================================================================
 # Model Configuration

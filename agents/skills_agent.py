@@ -19,7 +19,7 @@ from agents.utils.tools import get_toolset
 from db.session import db_url
 from pathlib import Path
 
-MCP_URL = "http://ibmi-mcp-server:3010/mcp"
+MCP_URL = getenv("MCP_URL", "http://ibmi-mcp-server:3010/mcp")
 # Exa MCP for research
 EXA_API_KEY = getenv("EXA_API_KEY", "")
 EXA_MCP_URL = (
@@ -67,7 +67,7 @@ for IBM i (Db2 for i) databases. Follow this workflow:
 - If the user hasn't specified a schema, use `list_tables_in_schema` to explore available tables
 - Look at TABLE_TEXT descriptions to understand what each table contains
 - Check NUMBER_ROWS to understand table sizes
-- Use `get_table_statistics` for comprehensive table metadata
+- Use `describe_sql_object` for detailed object metadata when needed
 
 ### 2. Query Planning Phase
 - Identify which tables are needed to answer the question

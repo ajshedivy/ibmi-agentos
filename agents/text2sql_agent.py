@@ -7,6 +7,8 @@ databases. Uses MCP tools for schema discovery, query validation, and execution.
 Test: python -m agents.text2sql_agent
 """
 
+from os import getenv
+
 from agno.agent import Agent
 from agno.db.postgres import PostgresDb
 from agno.tools.mcp import MCPTools
@@ -16,7 +18,7 @@ from agents.utils.common import AUDIT, DATA_HANDLING, ERROR_HANDLING, GUARDRAILS
 from agents.utils.tools import get_toolset
 from db.session import db_url
 
-MCP_URL = "http://ibmi-mcp-server:3010/mcp"
+MCP_URL = getenv("MCP_URL", "http://ibmi-mcp-server:3010/mcp")
 
 # =============================================================================
 # Model Configuration
@@ -50,7 +52,7 @@ for IBM i (Db2 for i) databases. Follow this workflow:
 - If the user hasn't specified a schema, use `list_tables_in_schema` to explore available tables
 - Look at TABLE_TEXT descriptions to understand what each table contains
 - Check NUMBER_ROWS to understand table sizes
-- Use `get_table_statistics` for comprehensive table metadata
+- Use `describe_sql_object` for detailed object metadata when needed
 
 ### 2. Query Planning Phase
 - Identify which tables are needed to answer the question
@@ -76,7 +78,7 @@ for IBM i (Db2 for i) databases. Follow this workflow:
 | `list_tables_in_schema` | List tables/views in a schema with row counts |
 | `validate_query` | Validate SQL syntax before execution |
 | `sample_rows` | Generate sample query for a table |
-| `get_table_statistics` | Get comprehensive table stats (size, usage, rows) |
+| `describe_sql_object` | Inspect table/view object metadata |
 
 ## IBM i SQL Guidelines
 
@@ -125,7 +127,7 @@ tools = [
         url=MCP_URL,
         transport="streamable-http",
         timeout_seconds=30,
-        include_tools=["execute_sql"] + get_toolset("text2sql"),
+        include_tools=["execute_sql", "describe_sql_object"] + get_toolset("text2sql"),
         requires_confirmation_tools=["execute_sql"],
     )
 ]
