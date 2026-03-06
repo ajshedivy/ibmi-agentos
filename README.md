@@ -50,13 +50,18 @@ cp example.env .env
 
 Add your API keys and IBM i connection details:
 ```sh
-# Required
+# Required - at least one model provider API key
 ANTHROPIC_API_KEY=sk-ant-***
 
 # IBM i connection
 DB2i_HOST=your-ibmi-hostname
 DB2i_USER=your-ibmi-user
 DB2i_PASS=your-ibmi-password
+
+# Model configuration (optional - defaults to Anthropic Claude)
+# Format: "<provider>:<model_id>" - see https://docs.agno.com/models/providers/model-index
+AGENT_MODEL=anthropic:claude-sonnet-4-5
+AGENT_TEAM_MEMBER_MODEL=anthropic:claude-haiku-4-5
 
 # Optional
 EXA_API_KEY=***          # Exa API key for web research (used by Pal)
@@ -316,7 +321,7 @@ docker exec -it agentos-api python -m agents.knowledge_agent
 ```
 ├── agents/
 │   ├── utils/
-│   │   ├── common.py                    # Shared instructions (guardrails, data handling)
+│   │   ├── common.py                    # Shared model config and instructions
 │   │   └── tools.py                     # Toolset loader for MCP tool filtering
 │   ├── pal.py                           # Personal second brain agent
 │   ├── knowledge_agent.py               # RAG agent
@@ -347,13 +352,13 @@ docker exec -it agentos-api python -m agents.knowledge_agent
 1. Create `agents/my_agent.py`:
 ```python
 from agno.agent import Agent
-from agno.models.anthropic import Claude
+from agents.utils.common import AGENT_MODEL
 from db.session import get_postgres_db
 
 my_agent = Agent(
     id="my-agent",
     name="My Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=AGENT_MODEL,
     db=get_postgres_db(),
     instructions="You are a helpful assistant.",
 )
@@ -396,14 +401,26 @@ my_agent = Agent(
 
 ### Use a different model provider
 
-1. Add your API key to `.env` (e.g., `OPENAI_API_KEY`)
-2. Update agents to use the new provider:
-```python
-from agno.models.openai import OpenAIResponses
+All agents use a shared model configuration via environment variables. To switch providers:
 
-model=OpenAIResponses(id="gpt-4.1")
+1. Add your API key to `.env` (e.g., `OPENAI_API_KEY`)
+2. Set the model env vars in `.env`:
+```sh
+# OpenAI
+AGENT_MODEL=openai:gpt-4o
+AGENT_TEAM_MEMBER_MODEL=openai:gpt-4o-mini
+
+# Google Gemini
+AGENT_MODEL=google:gemini-2.0-flash
+
+# AWS Bedrock
+AGENT_MODEL=aws-bedrock:anthropic.claude-sonnet-4-5-v1
+
+# Any provider supported by agno
+# See full list: https://docs.agno.com/models/providers/model-index
 ```
-3. Add dependency: `openai` in `pyproject.toml`
+3. Add the provider's SDK dependency to `pyproject.toml` if not already present
+4. Restart: `docker compose restart`
 
 ---
 
@@ -447,10 +464,12 @@ python parse_mcp_tools.py --skip-validation                               # skip
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `ANTHROPIC_API_KEY` | Yes | - | Anthropic API key |
+| `ANTHROPIC_API_KEY` | Yes* | - | Anthropic API key (*or another provider's key) |
 | `DB2i_HOST` | Yes | - | IBM i hostname or IP address |
 | `DB2i_USER` | Yes | - | IBM i user profile |
 | `DB2i_PASS` | Yes | - | IBM i password |
+| `AGENT_MODEL` | No | `anthropic:claude-sonnet-4-5` | Model for agents ([provider index](https://docs.agno.com/models/providers/model-index)) |
+| `AGENT_TEAM_MEMBER_MODEL` | No | `anthropic:claude-haiku-4-5` | Lightweight model for team members |
 | `EXA_API_KEY` | No | - | Exa API key for web research |
 | `DB_HOST` | No | `localhost` | PostgreSQL host |
 | `DB_PORT` | No | `5432` | PostgreSQL port |

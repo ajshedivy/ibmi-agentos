@@ -1,9 +1,24 @@
 """
-Shared instruction blocks for IBM i agents.
+Shared instruction blocks and model configuration for IBM i agents.
 
 These blocks implement defense-in-depth patterns that are genuinely reused
 by ALL agents. Import and compose them in each agent's instructions.
 """
+
+from os import getenv
+
+from agno.models.utils import get_model
+
+# =============================================================================
+# Model Configuration
+#
+# Set these env vars to use any model provider supported by agno.
+# Format: "<provider>:<model_id>" (e.g. "openai:gpt-4o", "google:gemini-2.0-flash")
+# Default: Anthropic Claude models
+# =============================================================================
+
+AGENT_MODEL = get_model(getenv("AGENT_MODEL", "anthropic:claude-sonnet-4-5"))
+AGENT_TEAM_MEMBER_MODEL = get_model(getenv("AGENT_TEAM_MEMBER_MODEL", "anthropic:claude-haiku-4-5"))
 
 # =============================================================================
 # Safety & Guardrails

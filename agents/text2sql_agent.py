@@ -10,20 +10,20 @@ Test: python -m agents.text2sql_agent
 from agno.agent import Agent
 from agno.db.postgres import PostgresDb
 from agno.tools.mcp import MCPTools
-from agno.models.anthropic import Claude
 
-from agents.utils.common import AUDIT, DATA_HANDLING, ERROR_HANDLING, GUARDRAILS, USER_CONTEXT
+from agents.utils.common import (
+    AGENT_MODEL,
+    AGENT_TEAM_MEMBER_MODEL,
+    AUDIT,
+    DATA_HANDLING,
+    ERROR_HANDLING,
+    GUARDRAILS,
+    USER_CONTEXT,
+)
 from agents.utils.tools import get_toolset
 from db.session import db_url
 
 MCP_URL = "http://ibmi-mcp-server:3010/mcp"
-
-# =============================================================================
-# Model Configuration
-# =============================================================================
-
-AGENT_MODEL = "claude-sonnet-4-5"
-AGENT_TEAM_MEMBER_MODEL = "claude-haiku-4-5"
 
 # =============================================================================
 # Agent Configuration
@@ -137,7 +137,7 @@ tools = [
 text2sql_agent = Agent(
     id=AGENT_ID,
     name=NAME,
-    model=Claude(id=AGENT_MODEL),
+    model=AGENT_MODEL,
     description=DESCRIPTION,
     instructions=INSTRUCTIONS,
     tools=tools,
@@ -168,7 +168,7 @@ text2sql_agent = Agent(
 text2sql_team_member = Agent(
     name=NAME,
     role=DESCRIPTION,
-    model=Claude(id=AGENT_TEAM_MEMBER_MODEL),
+    model=AGENT_TEAM_MEMBER_MODEL,
     instructions=INSTRUCTIONS,
     tools=tools,
     markdown=True,

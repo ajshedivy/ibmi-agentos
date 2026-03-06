@@ -11,8 +11,9 @@ Run:
 from agno.agent import Agent
 from agno.knowledge import Knowledge
 from agno.knowledge.embedder.openai import OpenAIEmbedder
-from agno.models.anthropic import Claude
 from agno.vectordb.pgvector import PgVector, SearchType
+
+from agents.utils.common import AGENT_MODEL
 
 from db import db_url, get_postgres_db
 
@@ -59,7 +60,7 @@ You are a knowledge assistant. You answer questions by searching your knowledge 
 knowledge_agent = Agent(
     id="knowledge-agent",
     name="Knowledge Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=AGENT_MODEL,
     db=agent_db,
     knowledge=knowledge,
     instructions=instructions,
