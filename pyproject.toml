@@ -8,7 +8,7 @@ authors = [{ name = "Agno", email = "hello@agno.com" }]
 
 dependencies = [
   # Agno
-  "agno",
+  "agno>=2.5.8",
   "agno-infra",
   # API
   "fastapi[standard]",
@@ -54,7 +54,7 @@ plugins = ["pydantic.mypy"]
 exclude = [".venv*"]
 
 [[tool.mypy.overrides]]
-module = ["pgvector.*", "setuptools.*", "agno.*", "duckdb.*"]
+module = ["pgvector.*", "setuptools.*", "agno.*", "duckdb.*", "yaml.*", "jsonschema.*"]
 ignore_missing_imports = true
 
 [tool.uv.pip]

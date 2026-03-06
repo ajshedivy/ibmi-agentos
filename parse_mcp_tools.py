@@ -18,6 +18,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -65,8 +66,8 @@ def parse_yaml_tools(tools_dir: Path, schema: dict | None = None) -> tuple[dict,
         }
     }
     """
-    toolsets = {}
-    all_errors = []
+    toolsets: dict[str, dict[str, Any]] = {}
+    all_errors: list[str] = []
 
     yaml_files = sorted(tools_dir.glob("*.yaml")) + sorted(tools_dir.glob("*.yml"))
     if not yaml_files:

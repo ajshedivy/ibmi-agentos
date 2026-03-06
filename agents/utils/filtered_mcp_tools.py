@@ -20,7 +20,7 @@ class FilteredMCPToolsMeta(type):
     """Metaclass to make FilteredMCPTools report as 'MCPTools' to AgentOS."""
 
     @property
-    def __name__(cls):
+    def __name__(cls) -> str:  # type: ignore[override]
         return "MCPTools"
 
 
@@ -132,7 +132,7 @@ class FilteredMCPTools(MCPTools, metaclass=FilteredMCPToolsMeta):
             prefix = "[FilteredMCPTools] "
             log_debug(prefix + message)
 
-    async def connect(self, force: bool = False) -> None:
+    async def connect(self, force: bool = False) -> None:  # type: ignore[override]
         """
         Connect to the MCP server with lazy connection support.
 
@@ -499,7 +499,7 @@ class FilteredMCPTools(MCPTools, metaclass=FilteredMCPToolsMeta):
                 self._session_context = None
                 self._context = None
 
-    async def close(self) -> None:
+    async def close(self) -> None:  # type: ignore[override]
         """
         Close the MCP connection with enhanced error handling.
 
@@ -526,217 +526,3 @@ class FilteredMCPTools(MCPTools, metaclass=FilteredMCPToolsMeta):
                 self.session = None
                 self._session_context = None
                 self._context = None
-
-
-# Convenience factory functions
-
-
-# Legacy factory functions (backward compatibility)
-def create_performance_tools(
-    url: str = "http://127.0.0.1:3010/mcp", transport: str = "streamable-http", **kwargs
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for performance monitoring tools."""
-    return FilteredMCPTools(url=url, transport=transport, toolsets="performance", **kwargs)
-
-
-def create_sysadmin_tools(
-    url: str = "http://127.0.0.1:3010/mcp",
-    transport: str = "streamable-http",
-    toolset_type: str = "discovery",  # 'discovery', 'browse', or 'search'
-    **kwargs,
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for system administration tools."""
-    toolset_map = {
-        "discovery": "sysadmin_discovery",
-        "browse": "sysadmin_browse",
-        "search": "sysadmin_search",
-    }
-
-    toolset = toolset_map.get(toolset_type, f"sysadmin_{toolset_type}")
-
-    return FilteredMCPTools(url=url, transport=transport, toolsets=toolset, **kwargs)
-
-
-def create_multi_toolset_tools(
-    toolsets: List[str],
-    url: str = "http://127.0.0.1:3010/mcp",
-    transport: str = "streamable-http",
-    **kwargs,
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for multiple toolsets."""
-    return FilteredMCPTools(url=url, transport=transport, toolsets=toolsets, **kwargs)
-
-
-def create_custom_filtered_tools(
-    filter_func: Callable,
-    url: str = "http://127.0.0.1:3010/mcp",
-    transport: str = "streamable-http",
-    **kwargs,
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools with custom filtering function."""
-    return FilteredMCPTools(url=url, transport=transport, custom_filter=filter_func, **kwargs)
-
-
-# New generic annotation-based factory functions
-
-
-def create_annotation_filtered_tools(
-    annotation_filters: Dict[str, Union[Any, List[Any], Callable]],
-    url: str = "http://127.0.0.1:3010/mcp",
-    transport: str = "streamable-http",
-    **kwargs,
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools with generic annotation-based filtering."""
-    return FilteredMCPTools(url=url, transport=transport, annotation_filters=annotation_filters, **kwargs)
-
-
-def create_readonly_tools(
-    url: str = "http://127.0.0.1:3010/mcp", transport: str = "streamable-http", **kwargs
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for read-only tools (using MCP standard annotation)."""
-    return FilteredMCPTools(
-        url=url,
-        transport=transport,
-        annotation_filters={"readOnlyHint": True},
-        **kwargs,
-    )
-
-
-def create_non_destructive_tools(
-    url: str = "http://127.0.0.1:3010/mcp", transport: str = "streamable-http", **kwargs
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for non-destructive tools (using MCP standard annotation)."""
-    return FilteredMCPTools(
-        url=url,
-        transport=transport,
-        annotation_filters={"destructiveHint": False},
-        **kwargs,
-    )
-
-
-def create_closed_world_tools(
-    url: str = "http://127.0.0.1:3010/mcp", transport: str = "streamable-http", **kwargs
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for closed-world tools (using MCP standard annotation)."""
-    return FilteredMCPTools(
-        url=url,
-        transport=transport,
-        annotation_filters={"openWorldHint": False},
-        **kwargs,
-    )
-
-
-def create_safe_tools(
-    url: str = "http://127.0.0.1:3010/mcp", transport: str = "streamable-http", **kwargs
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for safe tools (read-only, non-destructive, closed-world)."""
-    return FilteredMCPTools(
-        url=url,
-        transport=transport,
-        annotation_filters={
-            "readOnlyHint": True,
-            "destructiveHint": False,
-            "openWorldHint": False,
-        },
-        **kwargs,
-    )
-
-
-def create_system_performance_tools(
-    url: str = "http://127.0.0.1:3010/mcp", transport: str = "streamable-http", **kwargs
-) -> FilteredMCPTools:
-    """Create FilteredMCPTools for system performance tools with title filtering."""
-    return FilteredMCPTools(
-        url=url,
-        transport=transport,
-        annotation_filters={
-            "toolsets": ["performance"],
-            "title": lambda title: title and "system" in title.lower(),
-        },
-        **kwargs,
-    )
-
-
-if __name__ == "__main__":
-    # Example usage and testing
-    import asyncio
-    from dotenv import load_dotenv
-
-    load_dotenv()
-
-    async def test_filtered_mcp_tools():
-        """Test the FilteredMCPTools functionality."""
-
-        print("=== Testing FilteredMCPTools ===")
-
-        # Test 1: Legacy toolsets filtering (backward compatibility)
-        print("\n1. Testing legacy toolsets filtering (performance tools):")
-        performance_tools = create_performance_tools()
-
-        async with performance_tools:
-            print(f"   Performance tools loaded: {len(performance_tools.functions)}")
-            for name in performance_tools.functions.keys():
-                print(f"   - {name}")
-
-        # Test 2: New annotation_filters - MCP standard annotations
-        print("\n2. Testing MCP standard annotations (read-only tools):")
-        readonly_tools = create_readonly_tools()
-
-        async with readonly_tools:
-            print(f"   Read-only tools loaded: {len(readonly_tools.functions)}")
-            for name in readonly_tools.functions.keys():
-                print(f"   - {name}")
-
-        # Test 3: Combined filters (custom + standard annotations)
-        print("\n3. Testing combined annotation filters:")
-        combined_tools = create_annotation_filtered_tools(
-            {
-                "toolsets": ["performance", "sysadmin_discovery"],
-                "readOnlyHint": True,
-            }
-        )
-
-        async with combined_tools:
-            print(f"   Combined filtered tools loaded: {len(combined_tools.functions)}")
-            for name in combined_tools.functions.keys():
-                print(f"   - {name}")
-
-        # Test 4: Callable filter with annotations
-        print("\n4. Testing callable filter on title annotation:")
-        callable_tools = create_system_performance_tools()
-
-        async with callable_tools:
-            print(f"   System performance tools loaded: {len(callable_tools.functions)}")
-            for name in callable_tools.functions.keys():
-                print(f"   - {name}")
-
-        # Test 5: Safe tools (multiple MCP standard annotations)
-        print("\n5. Testing safe tools (read-only, non-destructive, closed-world):")
-        safe_tools = create_safe_tools()
-
-        async with safe_tools:
-            print(f"   Safe tools loaded: {len(safe_tools.functions)}")
-            for name in safe_tools.functions.keys():
-                print(f"   - {name}")
-
-        # Test 6: Direct annotation_filters usage
-        print("\n6. Testing direct annotation_filters usage:")
-        direct_tools = FilteredMCPTools(
-            url="http://127.0.0.1:3010/mcp",
-            transport="streamable-http",
-            annotation_filters={
-                "toolsets": ["performance"],
-                "destructiveHint": False,
-                "title": lambda t: t and len(t) < 50 if t else False,
-            },
-        )
-
-        async with direct_tools:
-            print(f"   Direct annotation filtered tools loaded: {len(direct_tools.functions)}")
-            for name in direct_tools.functions.keys():
-                print(f"   - {name}")
-
-        print("\n✓ All FilteredMCPTools tests completed!")
-
-    # Run the tests
-    asyncio.run(test_filtered_mcp_tools())
