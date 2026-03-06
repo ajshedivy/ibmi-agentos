@@ -51,31 +51,34 @@ services:
     networks:
       - agentos
   ibmi-mcp-server:
-    image: node:20-slim
+    image: ghcr.io/ibm/ibmi-mcp-server:latest
     container_name: ibmi-mcp-server
     restart: unless-stopped
     ports:
       - "3010:3010"
     networks:
       - agentos
-    working_dir: /app
-    command: npx -y @ibm/ibmi-mcp-server@latest
     env_file:
       - .env
     environment:
-      - MCP_TRANSPORT_TYPE=http 
+      - MCP_TRANSPORT_TYPE=http
+      - MCP_SESSION_MODE=stateless
       - YAML_AUTO_RELOAD=true
-      - TOOLS_YAML_PATH=/app/tools
+      - TOOLS_YAML_PATH=/usr/src/app/tools
       - YAML_ALLOW_DUPLICATE_SOURCES=true
       - IBMI_ENABLE_EXECUTE_SQL=true
+      - MCP_RATE_LIMIT_ENABLED=true
+      - MCP_RATE_LIMIT_MAX_REQUESTS=5000
+      - MCP_RATE_LIMIT_WINDOW_MS=60000
+      - MCP_RATE_LIMIT_SKIP_DEV=true
     volumes:
-      - ./tools:/app/tools:rw
+      - ./tools:/usr/src/app/tools:rw
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3010/healthz').then(function(r){process.exit(r.ok?0:1)}).catch(function(){process.exit(1)})\""]
-      interval: 5s
+      interval: 30s
       timeout: 10s
-      retries: 10
-      start_period: 15s
+      retries: 5
+      start_period: 20s
 
 
 networks:
